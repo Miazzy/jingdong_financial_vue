@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = env => {
   if (!env) {
@@ -25,7 +26,9 @@ module.exports = env => {
       }),
       new ExtractTextPlugin("style.css", {
         ignoreOrder: true
-      })
+      }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
+      new UglifyJsPlugin()
     )
   }
   return {
@@ -53,11 +56,11 @@ module.exports = env => {
           extractCSS: true,
           loaders: env.production ? {
             css: ExtractTextPlugin.extract({
-              use: 'css-loader!px2rem-loader?remUnit=40&remPrecision=8',
+              use: 'css-loader?minimize!px2rem-loader?remUnit=40&remPrecision=8',
               fallback: 'vue-style-loader'
             }),
             scss: ExtractTextPlugin.extract({
-              use: 'css-loader!px2rem-loader?remUnit=40&remPrecision=8!sass-loader',
+              use: 'css-loader?minimize!px2rem-loader?remUnit=40&remPrecision=8!sass-loader',
               fallback: 'vue-style-loader'
             })
           } : {
